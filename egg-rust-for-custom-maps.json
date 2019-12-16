@@ -1,0 +1,126 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2019-12-16T12:27:46+01:00",
+    "name": "Rust For Custom Maps",
+    "author": "nobbassen@gmail.com",
+    "description": "Compatible with Custom maps: The only aim in Rust is to survive. To do this you will need to overcome struggles such as hunger, thirst and cold. Build a fire. Build a shelter. Kill animals for meat. Protect yourself from other players, and kill them for meat. Create alliances with other players and form a town. Do whatever it takes to survive.",
+    "image": "quay.io\/pterodactyl\/core:rust",
+    "startup": ".\/RustDedicated -batchmode +server.port {{SERVER_PORT}} +server.identity \"rust\" +rcon.port {{RCON_PORT}} +rcon.web true +server.hostname \\\"{{HOSTNAME}}\\\" +server.level \\\"{{LEVEL}}\\\" +server.description \\\"{{DESCRIPTION}}\\\" +server.url \\\"{{SERVER_URL}}\\\" +server.headerimage \\\"{{SERVER_IMG}}\\\" +server.maxplayers {{MAX_PLAYERS}} +rcon.password \\\"{{RCON_PASS}}\\\" +server.saveinterval {{SAVEINTERVAL}} +server.levelurl \\\"{{SERVER_LEVELURL}}\\\" {{ADDITIONAL_ARGS}}",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Checking for new Steam Item Definitions..\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"latest.log\"\r\n}",
+        "stop": "quit"
+    },
+    "scripts": {
+        "installation": {
+            "script": "apt update\r\napt -y --no-install-recommends install curl unzip lib32gcc1 ca-certificates\r\ncd \/tmp\r\ncurl -sSL -o steamcmd.tar.gz http:\/\/media.steampowered.com\/installer\/steamcmd_linux.tar.gz\r\n\r\nmkdir -p \/mnt\/server\/steam\r\ntar -xzvf steamcmd.tar.gz -C \/mnt\/server\/steam\r\ncd \/mnt\/server\/steam\r\nchown -R root:root \/mnt\r\n\r\nexport HOME=\/mnt\/server\r\n.\/steamcmd.sh +login anonymous +force_install_dir \/mnt\/server +app_update 258550 +quit\r\nmkdir -p \/mnt\/server\/.steam\/sdk32\r\ncp -v \/mnt\/server\/steam\/linux32\/steamclient.so \/mnt\/server\/.steam\/sdk32\/steamclient.so",
+            "container": "ubuntu:16.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Server Name",
+            "description": "The name of your server in the public server list.",
+            "env_variable": "HOSTNAME",
+            "default_value": "A Rust Server",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|max:40"
+        },
+        {
+            "name": "uMod (OxideMod)",
+            "description": "Set whether you want the server to use and auto update uMod (OxideMod) or not. Valid options are \"1\" for true and \"0\" for false.",
+            "env_variable": "OXIDE",
+            "default_value": "1",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|boolean"
+        },
+        {
+            "name": "Description",
+            "description": "The description under your server title. Commonly used for rules & info. Use \\n for newlines.",
+            "env_variable": "DESCRIPTION",
+            "default_value": "Awesome Server! More info bellow this line\\nThis is the new line",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string"
+        },
+        {
+            "name": "URL",
+            "description": "The URL for your server. This is what comes up when clicking the \"Visit Website\" button.",
+            "env_variable": "SERVER_URL",
+            "default_value": "https:\/\/networkgamez.com",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "nullable|url"
+        },
+        {
+            "name": "Max Players",
+            "description": "The maximum amount of players allowed in the server at once.",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "40",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|integer"
+        },
+        {
+            "name": "Server Image",
+            "description": "The header image for the top of your server listing. \r\n\r\n- Width: 1024 px Height: 512 px\r\n- File Type: .jpg, .png\r\n- The file must be hosted in a publicly accessible web location (Dropbox, Imgur, etc)",
+            "env_variable": "SERVER_IMG",
+            "default_value": "",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "nullable|url"
+        },
+        {
+            "name": "RCON Port",
+            "description": "Port for RCON connections.\r\nProTip If you are using Pterodactyl, Pterodactyl can only assign one active port at any time. set the port to the same as your game port and connect using that very same port from your Rcon tool.",
+            "env_variable": "RCON_PORT",
+            "default_value": "28016",
+            "user_viewable": 1,
+            "user_editable": 0,
+            "rules": "required|integer"
+        },
+        {
+            "name": "RCON Password",
+            "description": "RCON access password.",
+            "env_variable": "RCON_PASS",
+            "default_value": "Ch4n63m3",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|max:64"
+        },
+        {
+            "name": "Save Interval",
+            "description": "Sets the server\u2019s auto-save interval in seconds.",
+            "env_variable": "SAVEINTERVAL",
+            "default_value": "60",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|integer"
+        },
+        {
+            "name": "Additional Arguments",
+            "description": "Add additional startup parameters to the server. Leave the default first time you start server as this is required by most plugins before you can run your own .map file.",
+            "env_variable": "ADDITIONAL_ARGS",
+            "default_value": "+server.level Procedural Map +server.worldsize 1500",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "nullable|string"
+        },
+        {
+            "name": "Custom Map URL",
+            "description": "Provide a public link from where the server can pull your custom .map file",
+            "env_variable": "SERVER_LEVELURL",
+            "default_value": "",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "nullable|url"
+        }
+    ]
+}
