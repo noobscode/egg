@@ -1,2 +1,2 @@
 # egg
-Eggs
+eggs for the Pterodactyl panel
